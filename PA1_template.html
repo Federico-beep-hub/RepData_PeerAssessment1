@@ -12,7 +12,7 @@
 
 <meta name="date" content="2025-05-10" />
 
-<title>PA1_template.Rmd</title>
+<title>PA1_template</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,14 +349,13 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">PA1_template.Rmd</h1>
+<h1 class="title toc-ignore">PA1_template</h1>
 <h4 class="date">2025-05-10</h4>
 
 </div>
 
 
-<p>#configuracion del entorno de trabajo y cargado de librerias
-<code>{rknitr::opts_chunk$set(echo = TRUE)}  library(ggplot2)   library(dplyr)   library(lubridate)</code></p>
+<p>##configuracion del entorno de trabajo y cargado de librerias</p>
 <p>##Lectura de los datos</p>
 <pre class="r"><code>datos &lt;- read.csv(&quot;activity.csv&quot;)
 head(datos)</code></pre>
@@ -367,8 +366,23 @@ head(datos)</code></pre>
 ## 4    NA 2012-10-01       15
 ## 5    NA 2012-10-01       20
 ## 6    NA 2012-10-01       25</code></pre>
-<p>#Procesamiento de datos</p>
+<p>##Procesamiento de datos</p>
 <pre class="r"><code>datos$date &lt;- as.Date(datos$date)</code></pre>
+<p>##Análisis de Pasos Diarios</p>
+<p>#<code>{r pasos diarios} pasos_diarios &lt;- summarise(group_by(datos, date),  total_pasos = sum(steps, na.rm = TRUE)) head(pasos_diarios) #</code></p>
+<pre class="r"><code>pasos_diarios &lt;- datos %&gt;%  
+  dplyr::group_by(date) %&gt;%  
+  dplyr::summarise(total_pasos = sum(steps, na.rm = TRUE)) 
+head(pasos_diarios)</code></pre>
+<pre><code>## # A tibble: 6 × 2
+##   date       total_pasos
+##   &lt;date&gt;           &lt;int&gt;
+## 1 2012-10-01           0
+## 2 2012-10-02         126
+## 3 2012-10-03       11352
+## 4 2012-10-04       12116
+## 5 2012-10-05       13294
+## 6 2012-10-06       15420</code></pre>
 
 
 
