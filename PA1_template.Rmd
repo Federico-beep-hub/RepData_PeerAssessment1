@@ -64,3 +64,35 @@ max_intervalo <- pasos_intervalo$interval[which.max(pasos_intervalo$pasos_promed
 cat("Intervalo con máximo pasos:", max_intervalo)  
 ```
 
+##Imputación de Valores Perdidos
+
+```{r imputacion_valores}
+#Conteo de actividades
+
+total_na <- sum(is.na(datos$steps))  
+cat("Total de valores NA:", total_na) 
+```
+#Estrategia de Imputación
+#Rellenamos los NAs con la media del intervalo correspondiente:
+
+```{r relleno d nas}
+datos_imputados <- datos %>% 
+  group_by(interval) %>%  
+  mutate(steps = ifelse(is.na(steps), mean(steps, na.rm = TRUE), steps)) 
+```
+#Histograma y Comparación Post-Imputación
+```{r histograma de comparacion}
+pasos_diarios_imputados <- datos_imputados %>%  
+  group_by(date) %>%  
+  summarise(total_pasos = sum(steps))  
+
+ggplot(pasos_diarios_imputados, aes(x = total_pasos)) +  
+  geom_histogram(binwidth = 1000, fill = "green", color = "black") +  
+  labs(title = "Pasos Diarios (Con Imputación)", x = "Total de Pasos", y = "Frecuencia")  
+
+media_imputada <- mean(pasos_diarios_imputados$total_pasos)  
+mediana_imputada <- median(pasos_diarios_imputados$total_pasos)  
+cat("Media (imputada):", media_imputada, "\nMediana (imputada):", mediana_imputada)  
+```
+
+
