@@ -1,25 +1,66 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "PA1_template"
+output: html_document
+date: "2025-05-10"
 ---
+##configuracion del entorno de trabajo y cargado de librerias
+``` {r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+fig.path = "figures/",
+  dev = "png")
+library(ggplot2)  
+library(dplyr)  
+library(lubridate)
+library(magrittr)
+```
+
+##Lectura de los datos
+
+``` {r leer_datos}
+datos <- read.csv("activity.csv")
+head(datos)
+``` 
+##Procesamiento de datos
+
+```{r procesar_datos} 
+datos$date <- as.Date(datos$date)
+```
+##Análisis de Pasos Diarios
 
 
-## Loading and preprocessing the data
+```{r pasos_diarios} 
+pasos_diarios <- datos %>%  
+  dplyr::group_by(date) %>%  
+  dplyr::summarise(total_pasos = sum(steps, na.rm = TRUE)) 
+head(pasos_diarios)
+```
+##Histograma de Pasos Diarios
+```{r histograma_pasos diarios}
+ggplot(pasos_diarios, aes(x = total_pasos)) +  
+  geom_histogram(binwidth = 1000, fill = "blue", color = "black") +  
+  labs(title = "Histograma de Pasos Diarios", x = "Total de Pasos", y = "Frecuencia") 
+```
+##Media y Mediana
+```{r media_mediana_numero_pasos}
+media <- mean(pasos_diarios$total_pasos)  
+mediana <- median(pasos_diarios$total_pasos)  
+cat("Media:", media, "\nMediana:", mediana)
+```
+## Patrón de Actividad Diaria 
+```{r patron de actividades}
 
+pasos_intervalo <- datos %>%  
+  group_by(interval) %>%  
+  summarise(pasos_promedio = mean(steps,na.rm = TRUE))
 
+ggplot(pasos_intervalo, aes(x = interval, y = pasos_promedio)) +  
+  geom_line(color = "red") +  
+  labs(title = "Pasos Promedio por Intervalo de 5 Minutos", x = "Intervalo", y = "Pasos")
+```
+##Intervalo con Máxima Actividad
 
-## What is mean total number of steps taken per day?
+```{r intervalo de maxima  actividad}
+max_intervalo <- pasos_intervalo$interval[which.max(pasos_intervalo$pasos_promedio)]  
+cat("Intervalo con máximo pasos:", max_intervalo)  
+```
 
-
-
-## What is the average daily activity pattern?
-
-
-
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
