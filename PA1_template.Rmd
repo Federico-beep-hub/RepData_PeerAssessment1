@@ -94,5 +94,32 @@ media_imputada <- mean(pasos_diarios_imputados$total_pasos)
 mediana_imputada <- median(pasos_diarios_imputados$total_pasos)  
 cat("Media (imputada):", media_imputada, "\nMediana (imputada):", mediana_imputada)  
 ```
+##Patrones en Días Laborables vs. Fin de Semana
+#Crear Variable 'Tipo de Día
+```{r var_tipode_datos}
+datos_imputados <- datos_imputados %>%  
+  mutate(tipo_dia = ifelse(weekdays(date) %in% c("sábado", "domingo"), "fin_de_semana", "laborable"))  
+```
+#Gráfico de Panel
+
+```{r grafico_de_panel}
+pasos_tipo_dia <- datos_imputados %>% 
+  group_by(interval, tipo_dia) %>%  
+  summarise(pasos_promedio = mean(steps))  
+
+ggplot(pasos_tipo_dia, aes(x = interval, y = pasos_promedio, color = tipo_dia)) +  
+  geom_line() +  
+  facet_wrap(~tipo_dia, ncol = 1) +  
+  labs(title = "Pasos Promedio: Laborables vs. Fin de Semana", x = "Intervalo", y = "Pasos")  
+```
+
+   ##Conclusiones y explicacion de resultados
+  
+  ##La imputación de NAs aumentó la media y mediana de pasos diarios.
+  
+  #Los fines de semana muestran un patrón de actividad más distribuido que los días laborables.
+  
+
+
 
 
